@@ -1,0 +1,18 @@
+R2 LIVE DEPLOY CHECKLIST
+
+[ ] Google Sheet dibuka sebagai Google Sheets
+[ ] Sheet RETAILER_MASTER ada
+[ ] Sheet PRODUCT_MASTER ada
+[ ] Sheet SCAN_DATA ada
+[ ] SCAN_DATA row 1: Retailer_ID, Product_ID, Qty_Box, Point, Volume, Value
+[ ] Code.gs sudah diganti dengan versi paket ini
+[ ] Save Apps Script
+[ ] Deploy Web App
+[ ] Execute as: Me
+[ ] Who has access: Anyone
+[ ] URL berakhiran /exec
+[ ] Jika update Code.gs setelah deployment: Manage deployments -> Edit -> New version -> Deploy
+[ ] Upload website ke GitHub Pages
+[ ] Tes GET: buka URL /exec di browser dan cek JSON
+[ ] Tes form: input 1 scan
+[ ] Cek SCAN_DATA bertambah 1 baris
