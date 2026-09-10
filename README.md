@@ -47,3 +47,12 @@ Google Apps Script adalah backend/API; GitHub Pages hanya meng-host tampilan web
 
 ## Filter Dashboard
 Dashboard sekarang memiliki filter Sales, Retail / Kios, dan Produk. KPI Filtered Value menampilkan total nilai transaksi Q3 sesuai filter. Scorecard dan ranking mengikuti filter tersebut.
+
+## Retailer Product Detail
+Saat satu Retail / Kios dipilih di Dashboard, muncul tabel produk yang di-scan oleh kios tersebut:
+- Produk
+- Box
+- Volume
+- Value
+- Total Value
+Jika Produk juga dipilih, tabel detail ikut terfilter ke produk tersebut.

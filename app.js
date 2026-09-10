@@ -30,6 +30,51 @@ async function loadLive(){
   }catch(err){ console.error(err); setStatus('● Mode offline — memakai data snapshot'); }
 }
 function setStatus(msg){const el=document.getElementById('status');if(el)el.textContent=msg;}
+function renderProductDetail(){
+  const rid=document.getElementById('retailerFilter')?.value||'';
+  const sales=document.getElementById('salesFilter')?.value||'';
+  const pf=document.getElementById('productFilter')?.value||'';
+  const area=document.getElementById('areaFilter')?.value||'';
+  const body=document.getElementById('productDetailTable');
+  if(!body)return;
+
+  // Detail is intended for a selected retailer/kios. If none is selected,
+  // show a prompt instead of mixing all kiosks into one product list.
+  if(!rid){
+    body.innerHTML='<tr><td colspan="4" class="muted">Pilih Retail / Kios untuk melihat produk yang di-scan.</td></tr>';
+    ['productDetailTotalBox','productDetailTotalVolume'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='0';});
+    ['productDetailTotalValue','productDetailFooterValue'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='Rp 0';});
+    return;
+  }
+
+  const map={};
+  S.filter(scan=>String(scan.Retailer_ID)===String(rid))
+   .filter(scan=>!pf||String(scan.Product_ID)===String(pf))
+   .forEach(scan=>{
+     const id=String(scan.Product_ID);
+     const p=P.find(x=>String(x.Product_ID)===id)||{};
+     if(!map[id]) map[id]={name:p.Product_Name||id,box:0,volume:0,unit:p.Volume_Unit||'',value:0};
+     map[id].box+=n(scan.Qty_Box);
+     map[id].volume+=n(scan.Volume);
+     map[id].value+=n(scan.Value);
+   });
+
+  const rows=Object.values(map).sort((a,b)=>b.value-a.value);
+  let totalBox=0,totalVolume=0,totalValue=0;
+  rows.forEach(x=>{totalBox+=x.box;totalVolume+=x.volume;totalValue+=x.value;});
+
+  body.innerHTML=rows.length?rows.map(x=>`<tr><td>${x.name}</td><td>${f(x.box)}</td><td>${f(x.volume)} ${x.unit}</td><td>Rp ${f(x.value)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="muted">Belum ada scan produk untuk kios ini.</td></tr>';
+
+  const tb=document.getElementById('productDetailTotalBox');
+  const tv=document.getElementById('productDetailTotalVolume');
+  const val=document.getElementById('productDetailTotalValue');
+  const foot=document.getElementById('productDetailFooterValue');
+  if(tb)tb.textContent=f(totalBox);
+  if(tv)tv.textContent=f(totalVolume);
+  if(val)val.textContent='Rp '+f(totalValue);
+  if(foot)foot.textContent='Rp '+f(totalValue);
+}
 function calc(){
   const sales=document.getElementById('salesFilter').value;
   const area=document.getElementById('areaFilter').value;
@@ -63,6 +108,7 @@ function render(){
   document.getElementById('achrank').innerHTML=ar.map((a,i)=>`<div class="rankrow"><span>#${i+1}</span><b>${a.name}</b><b>${pct(a.p)}</b></div>`).join('');
   const table=document.getElementById('table');
   if(table) table.innerHTML=x.rs.slice().sort((a,b)=>q3(b)-q3(a)).map(r=>`<tr><td>${r.Retailer_Name}</td><td>${f(r.Q3_Target)}</td><td>${f(q3(r))}</td><td>${pct(n(r.Q3_Target)?q3(r)/n(r.Q3_Target):0)}</td><td>${f(r.Annual_Target_2026)}</td><td>${f(n(r.Q1_Point)+n(r.Q2_Point)+q3(r))}</td><td>${pct(n(r.Annual_Target_2026)?(n(r.Q1_Point)+n(r.Q2_Point)+q3(r))/n(r.Annual_Target_2026):0)}</td><td>Rp ${f(q3Value(r))}</td></tr>`).join('');
+  renderProductDetail();
 }
 function refreshFilters(){
   const salesEl=document.getElementById('salesFilter'),areaEl=document.getElementById('areaFilter'),retEl=document.getElementById('retailerFilter'),prodEl=document.getElementById('productFilter');

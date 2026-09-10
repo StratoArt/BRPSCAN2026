@@ -1,6 +1,36 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>R2 Performance Dashboard</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><link rel="stylesheet" href="style.css"></head><body>
 <header><div class="brand"><div class="logo">B</div><div><b>R2 PERFORMANCE</b><small>Q3 2026 • Total Point Dashboard</small></div></div><nav><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="input">Input Q3</button><button class="nav" data-page="retailers">Retailer</button></nav></header>
 <main>
+<div class="product-detail panel">
+  <div class="section-title">
+    <div>
+      <small>RETAILER PRODUCT DETAIL</small>
+      <h2>Produk yang di-scan</h2>
+    </div>
+    <div class="detail-total">Total Value <strong id="productDetailTotalValue">Rp 0</strong></div>
+  </div>
+  <div class="table-wrap">
+    <table class="detail-table">
+      <thead>
+        <tr>
+          <th>Produk</th>
+          <th>Box</th>
+          <th>Volume</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody id="productDetailTable"></tbody>
+      <tfoot>
+        <tr>
+          <th>Total</th>
+          <th id="productDetailTotalBox">0</th>
+          <th id="productDetailTotalVolume">0</th>
+          <th id="productDetailFooterValue">Rp 0</th>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
 <section id="dashboard" class="page active"><div class="hero"><div><label>EXECUTIVE DASHBOARD</label><h1>R2 Performance <em>Q3 2026</em></h1><p>Monitoring target dan pencapaian Total Point per retailer.</p></div><div class="filters"><select id="salesFilter"><option value="">Semua Sales</option></select><select id="areaFilter"><option value="">Semua Area</option></select></div></div>
 <div class="dashboard-filter-row panel">
   <label>Sales<select id="salesFilter"></select></label>

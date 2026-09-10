@@ -19,3 +19,15 @@ button#save:disabled{opacity:.65;cursor:not-allowed}
 .dashboard-filter-row label{font-size:12px;font-weight:700}
 .dashboard-filter-row select{width:100%;margin-top:6px}
 @media(max-width:750px){.dashboard-filter-row{grid-template-columns:1fr}}
+
+.product-detail{margin:18px 0}
+.section-title{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:12px}
+.section-title small{font-weight:800;letter-spacing:.08em}
+.section-title h2{margin:4px 0 0;font-size:20px}
+.detail-total{font-size:12px;text-align:right}
+.detail-total strong{display:block;font-size:20px;margin-top:4px}
+.detail-table{width:100%;border-collapse:collapse}
+.detail-table th,.detail-table td{padding:11px 10px;border-bottom:1px solid #e7edf2;text-align:left}
+.detail-table th:nth-child(n+2),.detail-table td:nth-child(n+2){text-align:right}
+.detail-table tfoot th{border-top:2px solid #d7e0e8;border-bottom:0}
+@media(max-width:650px){.section-title{align-items:flex-start;flex-direction:column}.detail-total{text-align:left}}
