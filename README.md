@@ -56,3 +56,18 @@ Saat satu Retail / Kios dipilih di Dashboard, muncul tabel produk yang di-scan o
 - Value
 - Total Value
 Jika Produk juga dipilih, tabel detail ikut terfilter ke produk tersebut.
+
+## Final Dashboard Filter Behavior
+- Filter dashboard: Sales + Area + Retail/Kios.
+- Tidak ada filter Produk terpisah di dashboard.
+- Jika Retail/Kios tertentu dipilih, detail produk menampilkan semua produk yang di-scan kios tersebut.
+- Jika Retail/Kios = Semua, detail produk mengagregasikan semua produk yang di-scan seluruh kios pada Sales + Area yang dipilih.
+- Detail menampilkan Produk, Box, Volume, Value, dan Total Value.
+
+## Filter Final
+Dashboard menggunakan 4 filter: Sales, Area, Retail / Kios, dan Produk.
+- Semua Kios + Semua Produk = agregasi semua transaksi pada Sales/Area.
+- Kios tertentu + Semua Produk = seluruh produk kios tersebut.
+- Kios tertentu + Produk tertentu = transaksi produk tersebut pada kios.
+- Semua Kios + Produk tertentu = produk tersebut di seluruh kios pada Sales/Area.
+Detail produk selalu menampilkan Box, Volume, Value, dan Total Value.

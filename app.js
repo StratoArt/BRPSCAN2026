@@ -33,27 +33,23 @@ function setStatus(msg){const el=document.getElementById('status');if(el)el.text
 function renderProductDetail(){
   const rid=document.getElementById('retailerFilter')?.value||'';
   const sales=document.getElementById('salesFilter')?.value||'';
-  const pf=document.getElementById('productFilter')?.value||'';
   const area=document.getElementById('areaFilter')?.value||'';
+  const pf=document.getElementById('productFilter')?.value||'';
   const body=document.getElementById('productDetailTable');
   if(!body)return;
 
-  // Detail is intended for a selected retailer/kios. If none is selected,
-  // show a prompt instead of mixing all kiosks into one product list.
-  if(!rid){
-    body.innerHTML='<tr><td colspan="4" class="muted">Pilih Retail / Kios untuk melihat produk yang di-scan.</td></tr>';
-    ['productDetailTotalBox','productDetailTotalVolume'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='0';});
-    ['productDetailTotalValue','productDetailFooterValue'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='Rp 0';});
-    return;
-  }
+  const retailerScope=R.filter(r=>!sales||r.Sales==sales)
+    .filter(r=>!area||r.Area==area)
+    .filter(r=>!rid||String(r.Retailer_ID)===String(rid));
+  const retailerIds=new Set(retailerScope.map(r=>String(r.Retailer_ID)));
 
   const map={};
-  S.filter(scan=>String(scan.Retailer_ID)===String(rid))
+  S.filter(scan=>retailerIds.has(String(scan.Retailer_ID)))
    .filter(scan=>!pf||String(scan.Product_ID)===String(pf))
    .forEach(scan=>{
      const id=String(scan.Product_ID);
      const p=P.find(x=>String(x.Product_ID)===id)||{};
-     if(!map[id]) map[id]={name:p.Product_Name||id,box:0,volume:0,unit:p.Volume_Unit||'',value:0};
+     if(!map[id])map[id]={name:p.Product_Name||id,box:0,volume:0,unit:p.Volume_Unit||'',value:0};
      map[id].box+=n(scan.Qty_Box);
      map[id].volume+=n(scan.Volume);
      map[id].value+=n(scan.Value);
@@ -63,8 +59,9 @@ function renderProductDetail(){
   let totalBox=0,totalVolume=0,totalValue=0;
   rows.forEach(x=>{totalBox+=x.box;totalVolume+=x.volume;totalValue+=x.value;});
 
-  body.innerHTML=rows.length?rows.map(x=>`<tr><td>${x.name}</td><td>${f(x.box)}</td><td>${f(x.volume)} ${x.unit}</td><td>Rp ${f(x.value)}</td></tr>`).join('')
-    : '<tr><td colspan="4" class="muted">Belum ada scan produk untuk kios ini.</td></tr>';
+  body.innerHTML=rows.length
+    ? rows.map(x=>`<tr><td>${x.name}</td><td>${f(x.box)}</td><td>${f(x.volume)} ${x.unit}</td><td>Rp ${f(x.value)}</td></tr>`).join('')
+    : '<tr><td colspan="4" class="muted">Belum ada scan produk pada filter yang dipilih.</td></tr>';
 
   const tb=document.getElementById('productDetailTotalBox');
   const tv=document.getElementById('productDetailTotalVolume');
@@ -113,17 +110,24 @@ function render(){
 function refreshFilters(){
   const salesEl=document.getElementById('salesFilter'),areaEl=document.getElementById('areaFilter'),retEl=document.getElementById('retailerFilter'),prodEl=document.getElementById('productFilter');
   const os=salesEl?.value||'',oa=areaEl?.value||'',or=retEl?.value||'',op=prodEl?.value||'';
-  if(salesEl){salesEl.innerHTML='<option value="">Semua Sales</option>'+[...new Set(R.map(r=>r.Sales).filter(Boolean))].map(v=>`<option value="${v}">${v}</option>`).join('');salesEl.value=os;}
-  if(areaEl){areaEl.innerHTML='<option value="">Semua Area</option>'+[...new Set(R.map(r=>r.Area).filter(Boolean))].map(v=>`<option value="${v}">${v}</option>`).join('');areaEl.value=oa;}
+
+  if(salesEl){
+    salesEl.innerHTML='<option value="">Semua Sales</option>'+[...new Set(R.map(r=>r.Sales).filter(Boolean))].map(v=>`<option value="${v}">${v}</option>`).join('');
+    salesEl.value=os;
+  }
+  if(areaEl){
+    areaEl.innerHTML='<option value="">Semua Area</option>'+[...new Set(R.map(r=>r.Area).filter(Boolean))].map(v=>`<option value="${v}">${v}</option>`).join('');
+    areaEl.value=oa;
+  }
   if(retEl){
     const list=R.filter(r=>!salesEl?.value||r.Sales==salesEl.value).filter(r=>!areaEl?.value||r.Area==areaEl.value);
     retEl.innerHTML='<option value="">Semua Retail / Kios</option>'+list.map(r=>`<option value="${r.Retailer_ID}">${r.Retailer_Name}</option>`).join('');
-    if(list.some(r=>String(r.Retailer_ID)==String(or)))retEl.value=or;
+    if(list.some(r=>String(r.Retailer_ID)===String(or)))retEl.value=or;
   }
   if(prodEl){
     const list=P.filter(p=>String(p.Active).toUpperCase()==='YES');
     prodEl.innerHTML='<option value="">Semua Produk</option>'+list.map(p=>`<option value="${p.Product_ID}">${p.Product_Name}</option>`).join('');
-    if(list.some(p=>String(p.Product_ID)==String(op)))prodEl.value=op;
+    if(list.some(p=>String(p.Product_ID)===String(op)))prodEl.value=op;
   }
 }
 let productRows=[];

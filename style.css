@@ -15,7 +15,7 @@ button.secondary:hover{background:#edf6ff}
 button#save:disabled{opacity:.65;cursor:not-allowed}
 @media(max-width:650px){.entry-grid,.product-row-grid,.product-meta{grid-template-columns:1fr}.product-row .remove{width:100%}.products-head{align-items:start;gap:10px}.products-head{flex-direction:column}}
 
-.dashboard-filter-row{display:grid;grid-template-columns:1fr 1.2fr 1.5fr;gap:12px;margin:16px 0}
+.dashboard-filter-row{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:12px;margin:16px 0}
 .dashboard-filter-row label{font-size:12px;font-weight:700}
 .dashboard-filter-row select{width:100%;margin-top:6px}
 @media(max-width:750px){.dashboard-filter-row{grid-template-columns:1fr}}
