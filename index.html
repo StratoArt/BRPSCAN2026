@@ -5,6 +5,41 @@
 <div class="cards"><article><small>Q3 TARGET</small><strong id="q3target">0</strong></article><article class="green"><small>Q3 ACTUAL</small><strong id="q3actual">0</strong></article><article><small>Q3 ACHIEVEMENT</small><strong id="q3ach">0%</strong></article><article><small>YTD POINT</small><strong id="ytd">0</strong></article><article><small>ANNUAL TARGET</small><strong id="annual">0</strong></article><article><small>YTD ACHIEVEMENT</small><strong id="ytdach">0%</strong></article></div>
 <div class="grid"><div class="panel"><h2>Q3 Achievement</h2><div class="donut"><canvas id="donut"></canvas><span id="donutText">0%</span></div></div><div class="panel"><h2>Point by Quarter</h2><canvas id="quarter"></canvas></div></div>
 <div class="grid"><div class="panel"><h2>Top Retailer — Q3 Point</h2><div id="rank"></div></div><div class="panel"><h2>Retailer Achievement</h2><div id="achrank"></div></div></div></section>
-<section id="input" class="page"><div class="hero"><div><label>DATA ENTRY</label><h1>Input <em>Q3 Scan</em></h1><p>Pilih retailer, produk, lalu masukkan jumlah box.</p></div></div><div class="form panel"><label>Retailer<select id="rsel"></select></label><label>Product<select id="psel"></select></label><div class="info"><div>Point/Box<b id="pp">0</b></div><div>Volume/Box<b id="vv">0</b></div><div>Value/Box<b id="val">0</b></div></div><label>Qty Box<input id="qty" type="number" min="1" value="1"></label><div class="result"><div>Total Point<b id="tp">0</b></div><div>Total Volume<b id="tv">0</b></div><div>Total Value<b id="tx">0</b></div></div><button id="save">Simpan Q3</button><p id="status"></p></div></section>
+<section id="input" class="page">
+<div class="hero">
+  <div>
+    <label>DATA ENTRY</label>
+    <h1>Input <em>Q3 Scan</em></h1>
+    <p>Pilih Sales → pilih toko → tambahkan satu atau beberapa produk.</p>
+  </div>
+</div>
+
+<div class="form panel">
+  <div class="entry-grid">
+    <label>Sales
+      <select id="inputSalesFilter"></select>
+    </label>
+    <label>Retailer
+      <select id="rsel"></select>
+    </label>
+  </div>
+
+  <div class="products-head">
+    <h2>Produk</h2>
+    <button id="addProduct" type="button" class="secondary">＋ Tambah Produk</button>
+  </div>
+
+  <div id="productRows"></div>
+
+  <div class="result">
+    <div>Total Point<b id="grandPoint">0</b></div>
+    <div>Total Volume<b id="grandVolume">0</b></div>
+    <div>Total Value<b id="grandValue">0</b></div>
+  </div>
+
+  <button id="save" type="button">Simpan Q3</button>
+  <p id="status"></p>
+</div>
+</section>
 <section id="retailers" class="page"><div class="hero"><div><label>RETAILER PERFORMANCE</label><h1>Retailer <em>Scorecard</em></h1><p>Target Q3 dan Annual dibandingkan dengan pencapaian aktual.</p></div></div><div class="panel tablewrap"><table><thead><tr><th>Retailer</th><th>Q3 Target</th><th>Q3 Point</th><th>Q3 Ach.</th><th>Annual Target</th><th>YTD Point</th><th>YTD Ach.</th></tr></thead><tbody id="table"></tbody></table></div></section>
 </main><script src="data.js"></script><script src="app.js"></script></body></html>

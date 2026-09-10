@@ -1,0 +1,7 @@
+PERUBAHAN VERSI MULTI-PRODUCT
+1. Input Q3 memiliki filter Sales.
+2. Retailer otomatis tersaring berdasarkan Sales.
+3. Bisa menambahkan lebih dari satu produk.
+4. Satu tombol Simpan Q3 mengirim seluruh baris produk sekaligus.
+5. Code.gs mendukung payload {scans:[...]} dan menulis batch ke SCAN_DATA.
+6. Dashboard tetap menggunakan Total Point.

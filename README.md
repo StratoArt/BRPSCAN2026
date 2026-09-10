@@ -37,3 +37,10 @@ Google Apps Script adalah backend/API; GitHub Pages hanya meng-host tampilan web
 
 ## Fix versi ini
 `app.js` mempertahankan navigasi Dashboard/Input Q3/Retailer dan sudah menghubungkan tombol `Simpan Q3` ke API Google Apps Script.
+
+## Fitur Input Q3 versi Multi-Product
+- Filter Sales di halaman Input Q3.
+- Setelah Sales dipilih, daftar Retailer otomatis hanya menampilkan toko milik Sales tersebut.
+- Tombol `＋ Tambah Produk` menambahkan baris produk baru.
+- Satu kali klik `Simpan Q3` dapat menyimpan beberapa produk sekaligus untuk retailer yang sama.
+- Point, Volume, dan Value dihitung dari PRODUCT_MASTER.

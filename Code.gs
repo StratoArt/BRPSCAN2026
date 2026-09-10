@@ -30,49 +30,58 @@ function doGet() {
 function doPost(e) {
   try {
     const payload = JSON.parse((e && e.postData && e.postData.contents) || '{}');
-
     const ss = SpreadsheetApp.getActiveSpreadsheet();
     const sh = ss.getSheetByName(SHEET_SCAN);
     if (!sh) throw new Error('Sheet SCAN_DATA tidak ditemukan.');
 
     const headers = getHeaders(sh);
+    const inputScans = Array.isArray(payload.scans)
+      ? payload.scans
+      : [payload];
 
-    // Accept both IDs and common frontend names.
-    const retailerId = payload.Retailer_ID ?? payload.retailer_id ?? payload.retailerId;
-    const productId  = payload.Product_ID  ?? payload.product_id  ?? payload.productId;
-    const qtyBox     = Number(payload.Qty_Box ?? payload.qty_box ?? payload.qtyBox ?? 0);
-
-    if (!retailerId) throw new Error('Retailer_ID wajib diisi.');
-    if (!productId) throw new Error('Product_ID wajib diisi.');
-    if (!Number.isFinite(qtyBox) || qtyBox <= 0) throw new Error('Qty_Box harus lebih dari 0.');
-
-    // Look up product master so Point/Volume/Value cannot be manipulated by the browser.
     const products = sheetToObjects(SHEET_PRODUCT);
-    const product = products.find(p => String(p.Product_ID) === String(productId));
-    if (!product) throw new Error('Product_ID tidak ditemukan di PRODUCT_MASTER.');
+    const rows = [];
+    const saved = [];
 
-    const pointPerBox = Number(product.Point_Per_Box || 0);
-    const volumePerBox = Number(product.Volume_Per_Box || 0);
-    const valuePerBox = Number(product.Value_Per_Box || 0);
+    inputScans.forEach((item) => {
+      const retailerId = item.Retailer_ID ?? item.retailer_id ?? item.retailerId;
+      const productId  = item.Product_ID  ?? item.product_id  ?? item.productId;
+      const qtyBox     = Number(item.Qty_Box ?? item.qty_box ?? item.qtyBox ?? 0);
 
-    const rowObj = {
-      Retailer_ID: String(retailerId),
-      Product_ID: String(productId),
-      Qty_Box: qtyBox,
-      Point: qtyBox * pointPerBox,
-      Volume: qtyBox * volumePerBox,
-      Value: qtyBox * valuePerBox
-    };
+      if (!retailerId) throw new Error('Retailer_ID wajib diisi.');
+      if (!productId) throw new Error('Product_ID wajib diisi.');
+      if (!Number.isFinite(qtyBox) || qtyBox <= 0) throw new Error('Qty_Box harus lebih dari 0.');
 
-    const row = headers.map(h => rowObj[h] !== undefined ? rowObj[h] : '');
-    sh.appendRow(row);
+      const product = products.find(p => String(p.Product_ID) === String(productId));
+      if (!product) throw new Error('Product_ID tidak ditemukan di PRODUCT_MASTER: ' + productId);
 
-    SpreadsheetApp.flush();
+      const pointPerBox = Number(product.Point_Per_Box || 0);
+      const volumePerBox = Number(product.Volume_Per_Box || 0);
+      const valuePerBox = Number(product.Value_Per_Box || 0);
+
+      const rowObj = {
+        Retailer_ID: String(retailerId),
+        Product_ID: String(productId),
+        Qty_Box: qtyBox,
+        Point: qtyBox * pointPerBox,
+        Volume: qtyBox * volumePerBox,
+        Value: qtyBox * valuePerBox
+      };
+
+      rows.push(headers.map(h => rowObj[h] !== undefined ? rowObj[h] : ''));
+      saved.push(rowObj);
+    });
+
+    if (rows.length) {
+      sh.getRange(sh.getLastRow() + 1, 1, rows.length, headers.length).setValues(rows);
+      SpreadsheetApp.flush();
+    }
 
     return jsonOutput({
       ok: true,
-      message: 'Scan berhasil disimpan.',
-      row: rowObj
+      message: rows.length + ' scan berhasil disimpan.',
+      count: rows.length,
+      rows: saved
     });
   } catch (err) {
     return jsonOutput({ ok: false, error: String(err) });
