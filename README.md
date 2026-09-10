@@ -71,3 +71,6 @@ Dashboard menggunakan 4 filter: Sales, Area, Retail / Kios, dan Produk.
 - Kios tertentu + Produk tertentu = transaksi produk tersebut pada kios.
 - Semua Kios + Produk tertentu = produk tersebut di seluruh kios pada Sales/Area.
 Detail produk selalu menampilkan Box, Volume, Value, dan Total Value.
+
+## Header
+Branding header: Bayer Reward +.
