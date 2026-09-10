@@ -3,7 +3,14 @@ let D=window.R2_DATA||{retailers:[],products:[],scans:[]}, R=D.retailers, P=D.pr
 const n=x=>Number(x)||0;
 const f=x=>n(x).toLocaleString('id-ID');
 const pct=x=>(n(x)*100).toFixed(1)+'%';
-const q3=r=>S.filter(s=>String(s.Retailer_ID)==String(r.Retailer_ID)).reduce((a,s)=>a+n(s.Point),0);
+const q3=r=>{
+  const pf=document.getElementById('productFilter')?.value||'';
+  return S.filter(s=>String(s.Retailer_ID)==String(r.Retailer_ID)&&(!pf||String(s.Product_ID)==String(pf))).reduce((a,s)=>a+n(s.Point),0);
+};
+const q3Value=r=>{
+  const pf=document.getElementById('productFilter')?.value||'';
+  return S.filter(s=>String(s.Retailer_ID)==String(r.Retailer_ID)&&(!pf||String(s.Product_ID)==String(pf))).reduce((a,s)=>a+n(s.Value),0);
+};
 const ytd=r=>n(r.Q1_Point)+n(r.Q2_Point)+q3(r);
 
 function setData(data){
@@ -24,16 +31,26 @@ async function loadLive(){
 }
 function setStatus(msg){const el=document.getElementById('status');if(el)el.textContent=msg;}
 function calc(){
-  const sales=document.getElementById('salesFilter').value, area=document.getElementById('areaFilter').value;
-  let rs=R.filter(r=>!sales||r.Sales==sales).filter(r=>!area||r.Area==area);
-  let qt=rs.reduce((a,r)=>a+n(r.Q3_Target),0), qa=rs.reduce((a,r)=>a+q3(r),0), at=rs.reduce((a,r)=>a+n(r.Annual_Target_2026),0), yt=rs.reduce((a,r)=>a+ytd(r),0);
-  return {rs,qt,qa,at,yt};
+  const sales=document.getElementById('salesFilter').value;
+  const area=document.getElementById('areaFilter').value;
+  const retailer=document.getElementById('retailerFilter')?.value||'';
+  let rs=R.filter(r=>!sales||r.Sales==sales).filter(r=>!area||r.Area==area).filter(r=>!retailer||String(r.Retailer_ID)==String(retailer));
+  let qt=rs.reduce((a,r)=>a+n(r.Q3_Target),0);
+  let qa=rs.reduce((a,r)=>a+q3(r),0);
+  let at=rs.reduce((a,r)=>a+n(r.Annual_Target_2026),0);
+  let yt=rs.reduce((a,r)=>a+n(r.Q1_Point)+n(r.Q2_Point)+q3(r),0);
+  let value=rs.reduce((a,r)=>a+q3Value(r),0);
+  return {rs,qt,qa,at,yt,value};
 }
 function render(){
   const x=calc(),qa=x.qa,qt=x.qt,yt=x.yt,at=x.at;
-  document.getElementById('q3target').textContent=f(qt); document.getElementById('q3actual').textContent=f(qa);
-  document.getElementById('q3ach').textContent=qt?pct(qa/qt):'0%'; document.getElementById('annual').textContent=f(at);
-  document.getElementById('ytd').textContent=f(yt); document.getElementById('ytdach').textContent=at?pct(yt/at):'0%';
+  document.getElementById('q3target').textContent=f(qt);
+  document.getElementById('q3actual').textContent=f(qa);
+  document.getElementById('q3ach').textContent=qt?pct(qa/qt):'0%';
+  document.getElementById('annual').textContent=f(at);
+  document.getElementById('ytd').textContent=f(yt);
+  document.getElementById('ytdach').textContent=at?pct(yt/at):'0%';
+  const fv=document.getElementById('filteredValue'); if(fv)fv.textContent='Rp '+f(x.value);
   document.getElementById('donutText').textContent=qt?pct(qa/qt):'0%';
   if(donut)donut.destroy();
   donut=new Chart(document.getElementById('donut'),{type:'doughnut',data:{labels:['Actual','Gap'],datasets:[{data:[Math.min(qa,qt),Math.max(qt-qa,0)]}]},options:{cutout:'75%',plugins:{legend:{position:'bottom'}}}});
@@ -44,18 +61,25 @@ function render(){
   document.getElementById('rank').innerHTML=rank.map((a,i)=>`<div class="rankrow"><span>#${i+1}</span><b>${a.name}</b><b>${f(a.p)}</b></div>`).join('');
   let ar=x.rs.map(r=>({name:r.Retailer_Name,p:n(r.Q3_Target)?q3(r)/n(r.Q3_Target):0})).sort((a,b)=>b.p-a.p).slice(0,8);
   document.getElementById('achrank').innerHTML=ar.map((a,i)=>`<div class="rankrow"><span>#${i+1}</span><b>${a.name}</b><b>${pct(a.p)}</b></div>`).join('');
-  document.getElementById('table').innerHTML=x.rs.slice().sort((a,b)=>q3(b)-q3(a)).map(r=>`<tr><td>${r.Retailer_Name}</td><td>${f(r.Q3_Target)}</td><td>${f(q3(r))}</td><td>${pct(n(r.Q3_Target)?q3(r)/n(r.Q3_Target):0)}</td><td>${f(r.Annual_Target_2026)}</td><td>${f(ytd(r))}</td><td>${pct(n(r.Annual_Target_2026)?ytd(r)/n(r.Annual_Target_2026):0)}</td></tr>`).join('');
+  const table=document.getElementById('table');
+  if(table) table.innerHTML=x.rs.slice().sort((a,b)=>q3(b)-q3(a)).map(r=>`<tr><td>${r.Retailer_Name}</td><td>${f(r.Q3_Target)}</td><td>${f(q3(r))}</td><td>${pct(n(r.Q3_Target)?q3(r)/n(r.Q3_Target):0)}</td><td>${f(r.Annual_Target_2026)}</td><td>${f(n(r.Q1_Point)+n(r.Q2_Point)+q3(r))}</td><td>${pct(n(r.Annual_Target_2026)?(n(r.Q1_Point)+n(r.Q2_Point)+q3(r))/n(r.Annual_Target_2026):0)}</td><td>Rp ${f(q3Value(r))}</td></tr>`).join('');
 }
-
 function refreshFilters(){
-  const salesEl=document.getElementById('salesFilter'),areaEl=document.getElementById('areaFilter');
-  const oldSales=salesEl.value,oldArea=areaEl.value;
-  salesEl.innerHTML='<option value="">Semua Sales</option>'; areaEl.innerHTML='<option value="">Semua Area</option>';
-  [...new Set(R.map(r=>r.Sales).filter(Boolean))].forEach(v=>salesEl.insertAdjacentHTML('beforeend',`<option value="${v}">${v}</option>`));
-  [...new Set(R.map(r=>r.Area).filter(Boolean))].forEach(v=>areaEl.insertAdjacentHTML('beforeend',`<option value="${v}">${v}</option>`));
-  salesEl.value=oldSales;areaEl.value=oldArea;
+  const salesEl=document.getElementById('salesFilter'),areaEl=document.getElementById('areaFilter'),retEl=document.getElementById('retailerFilter'),prodEl=document.getElementById('productFilter');
+  const os=salesEl?.value||'',oa=areaEl?.value||'',or=retEl?.value||'',op=prodEl?.value||'';
+  if(salesEl){salesEl.innerHTML='<option value="">Semua Sales</option>'+[...new Set(R.map(r=>r.Sales).filter(Boolean))].map(v=>`<option value="${v}">${v}</option>`).join('');salesEl.value=os;}
+  if(areaEl){areaEl.innerHTML='<option value="">Semua Area</option>'+[...new Set(R.map(r=>r.Area).filter(Boolean))].map(v=>`<option value="${v}">${v}</option>`).join('');areaEl.value=oa;}
+  if(retEl){
+    const list=R.filter(r=>!salesEl?.value||r.Sales==salesEl.value).filter(r=>!areaEl?.value||r.Area==areaEl.value);
+    retEl.innerHTML='<option value="">Semua Retail / Kios</option>'+list.map(r=>`<option value="${r.Retailer_ID}">${r.Retailer_Name}</option>`).join('');
+    if(list.some(r=>String(r.Retailer_ID)==String(or)))retEl.value=or;
+  }
+  if(prodEl){
+    const list=P.filter(p=>String(p.Active).toUpperCase()==='YES');
+    prodEl.innerHTML='<option value="">Semua Produk</option>'+list.map(p=>`<option value="${p.Product_ID}">${p.Product_Name}</option>`).join('');
+    if(list.some(p=>String(p.Product_ID)==String(op)))prodEl.value=op;
+  }
 }
-
 let productRows=[];
 function inputInit(){
   const sf=document.getElementById('inputSalesFilter');
@@ -140,10 +164,12 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(b.dataset.page==='dashboard')render();
     if(b.dataset.page==='input'){inputInit();}
   });
-  document.getElementById('salesFilter').onchange=render;
-  document.getElementById('areaFilter').onchange=render;
+  document.getElementById('salesFilter').onchange=()=>{refreshFilters();render();};
+  document.getElementById('areaFilter').onchange=()=>{refreshFilters();render();};
   document.getElementById('inputSalesFilter').onchange=()=>{refreshRetailerSelect();};
   document.getElementById('addProduct').onclick=()=>{productRows.push({id:Date.now()+Math.random(),qty:1});renderProductRows();};
+  document.getElementById('retailerFilter').onchange=render;
+  document.getElementById('productFilter').onchange=render;
   document.getElementById('save').onclick=saveScan;
   refreshFilters();inputInit();render();loadLive();
 });

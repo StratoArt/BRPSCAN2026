@@ -44,3 +44,6 @@ Google Apps Script adalah backend/API; GitHub Pages hanya meng-host tampilan web
 - Tombol `＋ Tambah Produk` menambahkan baris produk baru.
 - Satu kali klik `Simpan Q3` dapat menyimpan beberapa produk sekaligus untuk retailer yang sama.
 - Point, Volume, dan Value dihitung dari PRODUCT_MASTER.
+
+## Filter Dashboard
+Dashboard sekarang memiliki filter Sales, Retail / Kios, dan Produk. KPI Filtered Value menampilkan total nilai transaksi Q3 sesuai filter. Scorecard dan ranking mengikuti filter tersebut.
