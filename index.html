@@ -1,46 +1,103 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bayer Reward +</title><script src="https://cdn.jsdelivr.net/npm/chart.js"></script><link rel="stylesheet" href="style.css"></head><body>
-<header><div class="brand"><div class="logo">B</div><div><b>R2 PERFORMANCE</b><small>Q3 2026 • Total Point Dashboard</small></div></div><nav><button class="nav active" data-page="dashboard">Dashboard</button><button class="nav" data-page="input">Input Q3</button><button class="nav" data-page="retailers">Retailer</button></nav></header>
-<main>
-<div class="product-detail panel">
-  <div class="section-title">
-    <div>
-      <small>RETAILER PRODUCT DETAIL</small>
-      <h2>Produk yang di-scan</h2>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bayer Reward + — BRP Performance</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="brand">
+    <img class="bayer-logo" src="bayer-logo.png" alt="Bayer">
+    <div class="brand-copy">
+      <div class="brand-name">Bayer <span>Reward +</span></div>
+      <div class="brand-title">BRP Performance</div>
+      <div class="brand-period">Q3 2026</div>
     </div>
-    <div class="detail-total">Total Value <strong id="productDetailTotalValue">Rp 0</strong></div>
   </div>
-  <div class="table-wrap">
-    <table class="detail-table">
-      <thead>
-        <tr>
-          <th>Produk</th>
-          <th>Box</th>
-          <th>Volume</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody id="productDetailTable"></tbody>
-      <tfoot>
-        <tr>
-          <th>Total</th>
-          <th id="productDetailTotalBox">0</th>
-          <th id="productDetailTotalVolume">0</th>
-          <th id="productDetailFooterValue">Rp 0</th>
-        </tr>
-      </tfoot>
-    </table>
+  <nav class="nav">
+    <button class="nav active" data-page="dashboard">📊 Dashboard</button>
+    <button class="nav" data-page="input">📝 Input Q3</button>
+    <button class="nav" data-page="retailers">👥 Retailer</button>
+  </nav>
+</header>
+<main>
+<section id="dashboard" class="page active">
+  <div class="page-intro">
+    <div>
+      <div class="eyebrow">PERFORMANCE OVERVIEW</div>
+      <h1>BRP Performance</h1>
+      <p>Monitoring target, Total Point, retailer performance, and Q3 scan value.</p>
+    </div>
+    <div class="period-badge"><span class="live-dot"></span> Q3 2026 <small>LIVE</small></div>
   </div>
-</div>
-<section id="dashboard" class="page active"><div class="hero"><div><label>EXECUTIVE DASHBOARD</label><h1>R2 Performance <em>Q3 2026</em></h1><p>Monitoring target dan pencapaian Total Point per retailer.</p></div><div class="filters"><select id="salesFilter"><option value="">Semua Sales</option></select><select id="areaFilter"><option value="">Semua Area</option></select></div></div>
-<div class="dashboard-filter-row panel">
-  <label>Sales<select id="salesFilter"></select></label>
-  <label>Retail / Kios<select id="retailerFilter"></select></label>
-  <label>Produk<select id="productFilter"></select></label>
-</div>
-<div class="cards"><article><small>Q3 TARGET</small><strong id="q3target">0</strong></article><article class="green"><small>Q3 ACTUAL</small><strong id="q3actual">0</strong></article><article><small>Q3 ACHIEVEMENT</small><strong id="q3ach">0%</strong></article><article><small>YTD POINT</small><strong id="ytd">0</strong></article><article><small>ANNUAL TARGET</small><strong id="annual">0</strong></article><article><small>YTD ACHIEVEMENT</small><strong id="ytdach">0%</strong></article><article class="green"><small>FILTERED VALUE</small><strong id="filteredValue">Rp 0</strong></article></div>
-<div class="grid"><div class="panel"><h2>Q3 Achievement</h2><div class="donut"><canvas id="donut"></canvas><span id="donutText">0%</span></div></div><div class="panel"><h2>Point by Quarter</h2><canvas id="quarter"></canvas></div></div>
-<div class="grid"><div class="panel"><h2>Top Retailer — Q3 Point</h2><div id="rank"></div></div><div class="panel"><h2>Retailer Achievement</h2><div id="achrank"></div></div></div></section>
-<section id="input" class="page">
+
+  <div class="dashboard-filter-row panel">
+    <label>Sales<select id="salesFilter"></select></label>
+    <label>Area<select id="areaFilter"></select></label>
+    <label>Retail / Kios<select id="retailerFilter"></select></label>
+    <label>Produk<select id="productFilter"></select></label>
+  </div>
+
+  <div class="sales-performance panel">
+    <div class="sales-performance-head">
+      <div>
+        <div class="eyebrow">SALES VALUE PERFORMANCE</div>
+        <h2>Q3 Value vs Target</h2>
+        <p id="salesTargetLabel">Target Sales — pilih Sales untuk melihat target individual.</p>
+      </div>
+      <div class="sales-ach-badge" id="salesValueAch">0%</div>
+    </div>
+    <div class="sales-metrics">
+      <div><span>Target Q3 Sales</span><strong id="salesTarget">Rp 0</strong></div>
+      <div><span>Scan Value</span><strong id="salesScanValue">Rp 0</strong></div>
+      <div><span>Gap to Target</span><strong id="salesGap">Rp 0</strong></div>
+      <div><span>Achievement</span><strong id="salesValueAchievement">0%</strong></div>
+    </div>
+    <div class="sales-progress"><div id="salesProgress"></div></div>
+  </div>
+
+  <div class="cards">
+    <article><small>Q3 TARGET</small><strong id="q3target">0</strong></article>
+    <article class="green"><small>Q3 ACTUAL</small><strong id="q3actual">0</strong></article>
+    <article><small>Q3 ACHIEVEMENT</small><strong id="q3ach">0%</strong></article>
+    <article><small>YTD POINT</small><strong id="ytd">0</strong></article>
+    <article><small>ANNUAL TARGET</small><strong id="annual">0</strong></article>
+    <article><small>YTD ACHIEVEMENT</small><strong id="ytdach">0%</strong></article>
+    <article class="green"><small>SCAN VALUE</small><strong id="filteredValue">Rp 0</strong></article>
+  </div>
+
+  <div class="grid">
+    <div class="panel"><h2>Q3 Achievement</h2><div class="donut"><canvas id="donut"></canvas><span id="donutText">0%</span></div></div>
+    <div class="panel"><h2>Point by Quarter</h2><canvas id="quarter"></canvas></div>
+  </div>
+
+  <div class="grid">
+    <div class="panel"><h2>Top Retailer — Q3 Point</h2><div id="rank"></div></div>
+    <div class="panel"><h2>Retailer Achievement</h2><div id="achrank"></div></div>
+  </div>
+
+  <div class="product-detail panel">
+    <div class="section-title">
+      <div>
+        <small>PRODUCT PERFORMANCE</small>
+        <h2>Produk yang di-scan</h2>
+        <p class="section-note">Ringkasan Box, Volume, dan Value berdasarkan filter aktif.</p>
+      </div>
+      <div class="detail-total">Total Value<strong id="productDetailTotalValue">Rp 0</strong></div>
+    </div>
+    <div class="table-wrap">
+      <table class="detail-table">
+        <thead><tr><th>Produk</th><th>Box</th><th>Volume</th><th>Value</th></tr></thead>
+        <tbody id="productDetailTable"></tbody>
+        <tfoot><tr><th>Total</th><th id="productDetailTotalBox">0</th><th id="productDetailTotalVolume">0</th><th id="productDetailFooterValue">Rp 0</th></tr></tfoot>
+      </table>
+    </div>
+  </div>
+</section><section id="input" class="page">
 <div class="hero">
   <div>
     <label>DATA ENTRY</label>
@@ -77,4 +134,8 @@
 </div>
 </section>
 <section id="retailers" class="page"><div class="hero"><div><label>RETAILER PERFORMANCE</label><h1>Retailer <em>Scorecard</em></h1><p>Target Q3 dan Annual dibandingkan dengan pencapaian aktual.</p></div></div><div class="panel tablewrap"><table><thead><tr><th>Retailer</th><th>Q3 Target</th><th>Q3 Point</th><th>Q3 Ach.</th><th>Annual Target</th><th>YTD Point</th><th>YTD Ach.</th><th>Value</th></tr></thead><tbody id="table"></tbody></table></div></section>
-</main><script src="data.js"></script><script src="app.js"></script></body></html>
+</main>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,4 +1,10 @@
 const API_URL="https://script.google.com/macros/s/AKfycbywwfIOAfMAsw35UmqcW7spSk5VleJgcOkRZJ3cmjKotxar-4ZSYVgBTHOYSuaDbRiaoA/exec";
+const SALES_TARGET_Q3 = {
+  "IVAN": 890000000,
+  "DESI": 490000000,
+  "Abdul Aziz": 700000000,
+  "Luqmanul Hakim": 550000000
+};
 let D=window.R2_DATA||{retailers:[],products:[],scans:[]}, R=D.retailers, P=D.products, S=D.scans, donut, bar;
 const n=x=>Number(x)||0;
 const f=x=>n(x).toLocaleString('id-ID');
@@ -82,7 +88,11 @@ function calc(){
   let at=rs.reduce((a,r)=>a+n(r.Annual_Target_2026),0);
   let yt=rs.reduce((a,r)=>a+n(r.Q1_Point)+n(r.Q2_Point)+q3(r),0);
   let value=rs.reduce((a,r)=>a+q3Value(r),0);
-  return {rs,qt,qa,at,yt,value};
+  const selectedSales=sales;
+  const salesTarget=selectedSales
+    ? n(SALES_TARGET_Q3[selectedSales])
+    : Object.values(SALES_TARGET_Q3).reduce((a,v)=>a+n(v),0);
+  return {rs,qt,qa,at,yt,value,salesTarget,selectedSales};
 }
 function render(){
   const x=calc(),qa=x.qa,qt=x.qt,yt=x.yt,at=x.at;
@@ -93,6 +103,30 @@ function render(){
   document.getElementById('ytd').textContent=f(yt);
   document.getElementById('ytdach').textContent=at?pct(yt/at):'0%';
   const fv=document.getElementById('filteredValue'); if(fv)fv.textContent='Rp '+f(x.value);
+
+  const salesTargetEl=document.getElementById('salesTarget');
+  const salesScanEl=document.getElementById('salesScanValue');
+  const salesGapEl=document.getElementById('salesGap');
+  const salesAchEl=document.getElementById('salesValueAchievement');
+  const salesBadge=document.getElementById('salesValueAch');
+  const salesProgress=document.getElementById('salesProgress');
+  const salesLabel=document.getElementById('salesTargetLabel');
+  const salesTarget=x.salesTarget;
+  const salesScan=x.value;
+  const salesGap=salesScan-salesTarget;
+  const salesAch=salesTarget?salesScan/salesTarget:0;
+  if(salesTargetEl)salesTargetEl.textContent='Rp '+f(salesTarget);
+  if(salesScanEl)salesScanEl.textContent='Rp '+f(salesScan);
+  if(salesGapEl){
+    salesGapEl.textContent=(salesGap>=0?'+ Rp ':'− Rp ')+f(Math.abs(salesGap));
+    salesGapEl.className=salesGap>=0?'positive':'negative';
+  }
+  if(salesAchEl)salesAchEl.textContent=pct(salesAch);
+  if(salesBadge)salesBadge.textContent=pct(salesAch);
+  if(salesProgress)salesProgress.style.width=Math.min(salesAch*100,100)+'%';
+  if(salesLabel)salesLabel.textContent=x.selectedSales
+    ? 'Target Q3 '+x.selectedSales
+    : 'Target gabungan seluruh Sales';
   document.getElementById('donutText').textContent=qt?pct(qa/qt):'0%';
   if(donut)donut.destroy();
   donut=new Chart(document.getElementById('donut'),{type:'doughnut',data:{labels:['Actual','Gap'],datasets:[{data:[Math.min(qa,qt),Math.max(qt-qa,0)]}]},options:{cutout:'75%',plugins:{legend:{position:'bottom'}}}});

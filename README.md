@@ -1,4 +1,4 @@
-# R2 Scan Dashboard — Live Google Sheets
+# Bayer Reward + — BRP Performance — Live Google Sheets
 
 Versi ini menghubungkan dashboard GitHub Pages ke Google Sheets melalui Google Apps Script Web App.
 
@@ -74,3 +74,12 @@ Detail produk selalu menampilkan Box, Volume, Value, dan Total Value.
 
 ## Header
 Branding header: Bayer Reward +.
+
+## Q3 Sales Target
+Target Sales disimpan di `app.js` dan tidak menambah kolom/sheet Excel:
+- IVAN: Rp 890.000.000
+- DESI: Rp 490.000.000
+- Abdul Aziz: Rp 700.000.000
+- Luqmanul Hakim: Rp 550.000.000
+
+Dashboard menghitung Scan Value berdasarkan filter aktif, lalu menampilkan Target Q3 Sales, Scan Value, Gap to Target, dan Achievement.
