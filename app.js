@@ -240,13 +240,65 @@ async function saveScan(){
   finally{btn.disabled=false;btn.textContent='Simpan Q3';}
 }
 
+function renderRetailersPage(){
+  const table=document.getElementById('table');
+  if(!table)return;
+  const rows=R.slice().sort((a,b)=>q3(b)-q3(a));
+  table.innerHTML=rows.map(r=>`<tr>
+    <td><strong>${r.Retailer_Name||''}</strong><br><small>${r.Sales||''} · ${r.Area||''}</small></td>
+    <td>${f(r.Q3_Target)}</td>
+    <td>${f(q3(r))}</td>
+    <td>${pct(n(r.Q3_Target)?q3(r)/n(r.Q3_Target):0)}</td>
+    <td>${f(r.Annual_Target_2026)}</td>
+    <td>${f(n(r.Q1_Point)+n(r.Q2_Point)+q3(r))}</td>
+    <td>${pct(n(r.Annual_Target_2026)?(n(r.Q1_Point)+n(r.Q2_Point)+q3(r))/n(r.Annual_Target_2026):0)}</td>
+    <td>Rp ${f(q3Value(r))}</td>
+  </tr>`).join('');
+}
+
+function calculateBawang(){
+  const baseline=Number(document.getElementById('bwBaseline')?.value)||0;
+  const bayer=Number(document.getElementById('bwBayer')?.value)||0;
+  const petani=Number(document.getElementById('bwPetani')?.value)||0;
+  const result=document.getElementById('bwResult');
+  const factorEl=document.getElementById('bwFactor');
+  const diffEl=document.getElementById('bwDifference');
+  const ratioEl=document.getElementById('bwRatio');
+  const msg=document.getElementById('bwMessage');
+  if(!result)return;
+  if(baseline<=0||bayer<=0||petani<=0){
+    result.textContent='—';factorEl.textContent='—';diffEl.textContent='—';ratioEl.textContent='—';
+    msg.innerHTML='Lengkapi <b>Baseline</b>, <b>Sampel Bayer</b>, dan <b>Sampel Petani</b>.';
+    return;
+  }
+  const factor=petani/bayer;
+  const estimated=baseline*factor;
+  const difference=petani-bayer;
+  result.textContent=estimated.toLocaleString('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2})+' Ton';
+  factorEl.textContent=factor.toLocaleString('id-ID',{minimumFractionDigits:3,maximumFractionDigits:3});
+  diffEl.textContent=(difference>=0?'+ ':'− ')+Math.abs(difference).toLocaleString('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1})+' Kg';
+  ratioEl.textContent=(factor*100).toLocaleString('id-ID',{minimumFractionDigits:1,maximumFractionDigits:1})+'%';
+  msg.innerHTML=`Baseline ${baseline.toLocaleString('id-ID')} Ton dikoreksi dengan faktor ${factor.toLocaleString('id-ID',{minimumFractionDigits:3,maximumFractionDigits:3})}.`;
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
-  document.querySelectorAll('.nav').forEach(b=>b.onclick=()=>{
-    document.querySelectorAll('.nav').forEach(x=>x.classList.remove('active'));
+  // Only the navigation buttons receive the page-switch handler.
+  // The parent <nav class="nav"> must NOT receive it, otherwise click events bubble
+  // to the parent and the page switch can fail.
+  document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=(e)=>{
+    e.preventDefault();
+    e.stopPropagation();
+    const pageId=b.dataset.page;
+    const page=document.getElementById(pageId);
+    if(!page)return;
+    document.querySelectorAll('.nav button[data-page]').forEach(x=>x.classList.remove('active'));
     document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');document.getElementById(b.dataset.page).classList.add('active');
-    if(b.dataset.page==='dashboard')render();
-    if(b.dataset.page==='input'){inputInit();}
+    b.classList.add('active');
+    page.classList.add('active');
+    if(pageId==='dashboard')render();
+    if(pageId==='input')inputInit();
+    if(pageId==='retailers')renderRetailersPage();
+    if(pageId==='bawang')calculateBawang();
   });
   document.getElementById('salesFilter').onchange=()=>{refreshFilters();render();};
   document.getElementById('areaFilter').onchange=()=>{refreshFilters();render();};
@@ -255,5 +307,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('retailerFilter').onchange=render;
   document.getElementById('productFilter').onchange=render;
   document.getElementById('save').onclick=saveScan;
+  document.getElementById('bwCalculate').onclick=calculateBawang;
+  ['bwBaseline','bwBayer','bwPetani'].forEach(id=>document.getElementById(id)?.addEventListener('input',calculateBawang));
   refreshFilters();inputInit();render();loadLive();
 });

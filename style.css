@@ -32,12 +32,12 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:Arial,Helvetica,
 .brand-title{font-weight:900;font-size:20px;color:var(--ink);margin-top:4px}
 .brand-period{font-size:11px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--bayer-blue-2);margin-top:4px}
 .nav{display:flex;align-items:center;gap:5px}
-.nav button{
+.nav button[data-page]{
   border:0;background:transparent;color:#4d6072;padding:10px 14px;
   border-radius:9px;font-weight:800;cursor:pointer;font-size:13px
 }
-.nav button.active{background:var(--bayer-blue);color:#fff}
-.nav button:hover:not(.active){background:#eef4f8;color:var(--bayer-blue)}
+.nav button[data-page].active{background:var(--bayer-blue);color:#fff}
+.nav button[data-page]:hover:not(.active){background:#eef4f8;color:var(--bayer-blue)}
 
 /* Page */
 .page{display:none;max-width:1320px;margin:auto;padding:30px 25px}
@@ -142,8 +142,8 @@ button#save:disabled{opacity:.65;cursor:not-allowed}
   .topbar{padding:9px 13px;align-items:center}
   .bayer-logo{width:52px;height:52px;flex-basis:52px}
   .brand-title{font-size:17px}
-  .nav button{padding:8px 9px;font-size:12px}
-  .nav button:nth-child(3){display:none}
+  .nav button[data-page]{padding:8px 9px;font-size:12px}
+  .nav button:nth-child(3){display:block}
   .page{padding:20px 14px}
   .page-intro{flex-direction:column;align-items:flex-start}
   .period-badge{align-self:flex-start}
@@ -153,7 +153,7 @@ button#save:disabled{opacity:.65;cursor:not-allowed}
 }
 @media(max-width:520px){
   .brand-name{font-size:14px}.brand-title{font-size:16px}.brand-period{font-size:9px}
-  .nav{gap:2px}.nav button{padding:8px 7px}
+  .nav{gap:2px}.nav button[data-page]{padding:8px 7px}
   .cards article{min-height:88px}.cards strong{font-size:19px}
   .entry-grid,.product-row-grid,.product-meta,.result{grid-template-columns:1fr}
   .product-row .remove{width:100%}
@@ -176,3 +176,25 @@ button#save:disabled{opacity:.65;cursor:not-allowed}
 .sales-progress div{height:100%;width:0;background:var(--bayer-green);border-radius:99px;transition:width .35s ease}
 @media(max-width:800px){.sales-metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:520px){.sales-performance-head{flex-direction:column}.sales-ach-badge{align-self:flex-start}.sales-metrics{grid-template-columns:1fr}}
+
+.calculator-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:17px}
+.calc-input-panel,.calc-result-panel{padding:22px}
+.calc-fields{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.calc-fields label{font-size:12px;font-weight:800;color:#526577}
+.input-with-unit{display:flex;margin-top:7px}
+.input-with-unit input{min-width:0;width:100%;border-radius:9px 0 0 9px}
+.input-with-unit span{display:flex;align-items:center;padding:0 11px;background:#edf3f7;border:1px solid #ccd8e2;border-left:0;border-radius:0 9px 9px 0;font-size:11px;font-weight:900;color:#68798b}
+.calc-button{width:100%;border:0;border-radius:9px;background:var(--bayer-blue);color:#fff;padding:13px;font-weight:900;cursor:pointer}
+.calc-button:hover{background:#002f63}
+.formula-note{margin-top:14px;padding:12px;background:var(--soft-blue);border-radius:9px;display:flex;flex-direction:column;gap:4px;font-size:11px;color:#617487}
+.formula-note b{color:var(--bayer-blue)}
+.calc-result-panel h2{margin:5px 0 17px;font-size:20px}
+.calc-main-result{padding:19px;border-radius:12px;background:linear-gradient(135deg,#edf6fc,#f2f8e9);border:1px solid #dce8ef}
+.calc-main-result small{font-size:10px;font-weight:900;letter-spacing:.5px;color:#66798a;text-transform:uppercase}
+.calc-main-result strong{display:block;margin-top:8px;font-size:31px;color:var(--bayer-blue)}
+.calc-result-list{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.calc-result-list div{display:flex;justify-content:space-between;gap:12px;padding:11px;border-bottom:1px solid #e7edf2}
+.calc-result-list span{font-size:11px;color:var(--muted)}
+.calc-result-list b{font-size:12px;color:var(--ink)}
+.calc-message{margin-top:13px;padding:11px;background:#f7fafc;border-radius:8px;font-size:11px;color:#66798a}
+@media(max-width:800px){.calculator-grid{grid-template-columns:1fr}.calc-fields{grid-template-columns:1fr}.nav{max-width:55vw;overflow-x:auto;white-space:nowrap}.nav button[data-page]{flex:0 0 auto}}

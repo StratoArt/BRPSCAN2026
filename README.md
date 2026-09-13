@@ -83,3 +83,15 @@ Target Sales disimpan di `app.js` dan tidak menambah kolom/sheet Excel:
 - Luqmanul Hakim: Rp 550.000.000
 
 Dashboard menghitung Scan Value berdasarkan filter aktif, lalu menampilkan Target Q3 Sales, Scan Value, Gap to Target, dan Achievement.
+
+## Navigation Fix
+Navigasi menggunakan handler khusus pada `button[data-page]`, sehingga klik Dashboard, Input Q3, dan Retailer tidak lagi tertangkap oleh elemen `<nav>` induk.
+
+## Bayer Reward + Portal
+Portal kini memiliki tab:
+- Dashboard / BRP Performance
+- Input Q3 Scan (Google Sheets tetap aktif)
+- Retailer
+- Bobot Sampel Bawang
+
+Kalkulator Bobot Sampel berdiri sebagai tool lokal di portal dan tidak mengubah SCAN_DATA, RETAILER_MASTER, PRODUCT_MASTER, atau Apps Script.

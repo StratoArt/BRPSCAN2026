@@ -22,6 +22,7 @@
     <button class="nav active" data-page="dashboard">📊 Dashboard</button>
     <button class="nav" data-page="input">📝 Input Q3</button>
     <button class="nav" data-page="retailers">👥 Retailer</button>
+    <button class="nav" data-page="bawang">🧅 Bobot Sampel</button>
   </nav>
 </header>
 <main>
@@ -134,6 +135,62 @@
 </div>
 </section>
 <section id="retailers" class="page"><div class="hero"><div><label>RETAILER PERFORMANCE</label><h1>Retailer <em>Scorecard</em></h1><p>Target Q3 dan Annual dibandingkan dengan pencapaian aktual.</p></div></div><div class="panel tablewrap"><table><thead><tr><th>Retailer</th><th>Q3 Target</th><th>Q3 Point</th><th>Q3 Ach.</th><th>Annual Target</th><th>YTD Point</th><th>YTD Ach.</th><th>Value</th></tr></thead><tbody id="table"></tbody></table></div></section>
+
+<section id="bawang" class="page">
+  <div class="page-intro">
+    <div>
+      <div class="eyebrow">FIELD CALCULATION TOOL</div>
+      <h1>Perhitungan Bobot Sampel</h1>
+      <p>Perhitungan estimasi bobot berdasarkan baseline dan faktor koreksi sampel.</p>
+    </div>
+    <div class="period-badge"><span class="live-dot"></span> TOOL</div>
+  </div>
+
+  <div class="calculator-grid">
+    <div class="panel calc-input-panel">
+      <div class="section-title">
+        <div>
+          <small>SAMPLE INPUT</small>
+          <h2>Data Sampel Bawang Merah</h2>
+          <p class="section-note">Masukkan angka yang didapat dari penimbangan lapangan.</p>
+        </div>
+      </div>
+      <div class="calc-fields">
+        <label>Baseline
+          <div class="input-with-unit"><input id="bwBaseline" type="number" step="0.01" value="10.65"><span>Ton</span></div>
+        </label>
+        <label>Sampel Bayer
+          <div class="input-with-unit"><input id="bwBayer" type="number" step="0.1" value=""><span>Kg</span></div>
+        </label>
+        <label>Sampel Petani
+          <div class="input-with-unit"><input id="bwPetani" type="number" step="0.1" value=""><span>Kg</span></div>
+        </label>
+      </div>
+      <button id="bwCalculate" class="calc-button" type="button">Hitung Koreksi</button>
+      <div class="formula-note">
+        <b>Rumus faktor koreksi</b>
+        <span>Faktor Koreksi = Sampel Petani ÷ Sampel Bayer</span>
+        <span>Estimasi Terkoreksi = Baseline × Faktor Koreksi</span>
+      </div>
+    </div>
+
+    <div class="panel calc-result-panel">
+      <div class="eyebrow">CALCULATION RESULT</div>
+      <h2>Hasil Perhitungan</h2>
+      <div class="calc-main-result">
+        <small>Estimasi Bobot Terkoreksi</small>
+        <strong id="bwResult">—</strong>
+      </div>
+      <div class="calc-result-list">
+        <div><span>Faktor Koreksi</span><b id="bwFactor">—</b></div>
+        <div><span>Selisih Sampel</span><b id="bwDifference">—</b></div>
+        <div><span>Rasio Petani terhadap Bayer</span><b id="bwRatio">—</b></div>
+      </div>
+      <div id="bwMessage" class="calc-message">Masukkan data sampel lalu tekan <b>Hitung Koreksi</b>.</div>
+    </div>
+  </div>
+</section>
+
 </main>
 <script src="data.js"></script>
 <script src="app.js"></script>
